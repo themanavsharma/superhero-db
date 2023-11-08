@@ -50,6 +50,22 @@ app.get('/api/superhero/:id/powers', (req, res) => {
 });
 
 
+
+// gets the publisher names 
+app.get('/api/publishers', (req, res) => {
+
+    const publisherNames = superheroInfoData.map(hero => hero.Publisher).filter(Boolean); //get all the publisher names 
+  
+    if (publisherNames.length === 0) { // return a 404 error if no publishers are found
+      return res.status(404).json({ error: 'No publishers found' });
+    }
+
+    res.json({ publishers: publisherNames }); // send the publisher names as a json in the response
+
+});
+
+
+
 app.listen(port, () => { //starts the server and listens on port 3000
     console.log(`Server is running on port ${port}`);
   });
