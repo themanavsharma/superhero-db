@@ -50,3 +50,6 @@ app.get('/api/superhero/:id/powers', (req, res) => {
 });
 
 
+app.listen(port, () => { //starts the server and listens on port 3000
+    console.log(`Server is running on port ${port}`);
+  });
