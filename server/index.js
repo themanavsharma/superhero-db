@@ -5,6 +5,8 @@ const path = require('path');
 
 const app = express();
 
+// Serve static files from the 'client' directory
+app.use(express.static(path.join(__dirname, '../client')));
 
 
 const data = fs.readFileSync(path.join(__dirname, 'superhero_info.json'), 'utf-8'); // reads superhero info data from the json file
