@@ -29,3 +29,30 @@ async function getSuperheroPowers() {
       console.log('Error getting the superhero information:', error); // logs an error if it can't get the superhero info
     }
   }
+
+
+async function searchSuperheroes() {
+
+    const field = document.getElementById('fieldDropdown').value.toLowerCase();
+    const pattern = document.getElementById('patternInput').value;
+    const n = document.getElementById('resultsInput').value;
+
+    try {
+        const response = await fetch(`http://localhost:3000/api/${field}/${pattern}/${n}`);
+        const data = await response.json();
+
+        if (response.ok) {
+      
+            console.log('Search results:', data);
+            document.getElementById('superheroInfo').innerHTML = JSON.stringify(data, null, 2);
+
+        } else {
+       
+            console.error('Error searching superheroes:', data.error);
+        }
+    } catch (error) {
+
+        console.error('Unexpected error:', error);
+    }
+}
+

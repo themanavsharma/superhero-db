@@ -7,10 +7,47 @@
 </head>
 <body>
   <h1>Superheros</h1>
+  
+  <h2>General Search:</h2>
   <label>Enter Superhero ID:</label>
   <input type="text" id="superheroId">
   <button onclick="getSuperheroInfo()">Get Info</button>
   <button onclick="getSuperheroPowers()">Get Powers</button>
+
+
+  <h2>Specifc Search:</h2>
+
+  <label>Choose a field:</label>
+  <select class="specificSearch" id="fieldDropdown">
+
+    <option value="name">Name</option>
+    <option value="gender">Gender</option>
+    <option value="eye color">Eye Color</option>
+    <option value="hair color">Hair Color</option>
+    <option value="height">Height</option>
+    <option value="publisher">Publisher</option>
+    <option value="height">Height</option>
+    <option value="skin color">Skin Color</option>
+    <option value="alignment">Alignment</option>
+    <option value="weight">Weight</option>
+   
+  </select>
+
+  <br>
+
+  <label>Enter a Pattern:</label>
+  <input type="text" class="specificSearch" id="patternInput">
+
+  <br>
+
+  <label>Enter number of matching results:</label>
+  <input type="number" class="specificSearch" id="resultsInput">
+
+  <br>
+
+  <button onclick="searchSuperheroes()">Search</button>
+
+
  
   <div id="superheroInfo"></div>  <!-- this is the cointainer for the response -->
 

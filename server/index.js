@@ -68,6 +68,46 @@ app.get('/api/publishers', (req, res) => {
 
 
 
+
+const theData = fs.readFileSync(path.join(__dirname, 'superhero_info.json'), 'utf-8');
+const theSuperheroInfoData = JSON.parse(theData).map(hero => {
+  const lowercasedHero = {};
+  for (const key in hero) {
+    lowercasedHero[key.toLowerCase()] = hero[key];
+  }
+  return lowercasedHero;
+});
+
+
+app.get('/api/:field/:pattern/:n', (req, res) => {
+  const { field, pattern, n } = req.params;
+  console.log('Received request with parameters:', { field, pattern, n });
+
+  const lowercasePattern = pattern.toLowerCase();
+
+  const matchingSuperheroes = theSuperheroInfoData.filter(hero => {
+    console.log('Checking:', { field, pattern, heroField: hero[field].toLowerCase() });
+
+    return hero[field].toLowerCase().includes(lowercasePattern);
+  });
+
+  console.log('Matching superheroes:', matchingSuperheroes);
+
+  if (matchingSuperheroes.length === 0) {
+ 
+    res.status(404).json({ error: 'No superheroes found matching the criteria' });
+  } else {
+
+    const result = n ? matchingSuperheroes.slice(0, n) : matchingSuperheroes;
+
+    res.json(result);
+  }
+});
+
+
+
+
+
 app.listen(port, () => { //starts the server and listens on port 3000
     console.log(`Server is running on port ${port}`);
   });
