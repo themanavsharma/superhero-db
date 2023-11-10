@@ -1,5 +1,6 @@
 server/superhero_info.json
 server/superhero_powers.json
+server/db.json
 node_modules/
 package-lock.json
 package.json

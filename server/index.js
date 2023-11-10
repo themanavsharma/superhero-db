@@ -133,6 +133,25 @@ app.post('/api/lists/:listName', (req, res) => {
     }
   });
 
+  app.post('/api/lists/:listName/:superheroIds', (req, res) => {
+    const listName = req.params.listName;
+    const superheroIds = req.params.superheroIds;
+
+    const existingList = db.get(`superheroLists.${listName}`).value();
+
+    if (!existingList) {
+        return res.status(404).json({ error: `List with name '${listName}' does not exist` });
+    }
+
+
+    const newIds = superheroIds.split(',').map(id => parseInt(id.trim()));
+    const superheroesToAdd = superheroInfoData.filter(hero => newIds.includes(hero.id));
+
+
+    db.set(`superheroLists.${listName}`, superheroesToAdd).write();
+    res.json({ message: `Superheroes added to list '${listName}' successfully` });
+});
+
 
 
 
