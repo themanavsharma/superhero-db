@@ -86,7 +86,37 @@ const theSuperheroInfoData = JSON.parse(theData).map(hero => {
   return lowercasedHero;
 });
 
+// returns all the info for a given list name
+app.get('/api/lists/:listName/superheroes/details', (req, res) => {
+  const listName = req.params.listName;
 
+  const existingList = db.get(`superheroLists.${listName}`).value();
+
+  if (!existingList) {
+    return res.status(404).json({ error: `List with name '${listName}' does not exist` });
+  }
+
+  res.json(existingList);
+});
+
+
+//returns the ids for a given list name
+app.get('/api/lists/:listName/superheroes', (req, res) => {
+  const listName = req.params.listName;
+
+  const existingList = db.get(`superheroLists.${listName}`).value();
+
+  if (!existingList) {
+    return res.status(404).json({ error: `List with name '${listName}' does not exist` });
+  }
+
+  const superheroIds = existingList.map(thing => thing.id);
+
+  res.json({ superheroIds });
+});
+
+
+//returns n number of superheroes that match a field and pattern
 app.get('/api/:field/:pattern/:n', (req, res) => {
   const { field, pattern, n } = req.params;
   console.log('Received request with parameters:', { field, pattern, n });
@@ -118,7 +148,7 @@ const db = low(adapter);
 
 db.defaults({ superheroLists: {} }).write();
 
-
+//creates a list with a given name
 app.post('/api/lists/:listName', (req, res) => {
     const listName = req.params.listName;
   
@@ -133,6 +163,7 @@ app.post('/api/lists/:listName', (req, res) => {
     }
   });
 
+//adds given superheros to a given list
   app.post('/api/lists/:listName/:superheroIds', (req, res) => {
     const listName = req.params.listName;
     const superheroIds = req.params.superheroIds;
@@ -151,6 +182,20 @@ app.post('/api/lists/:listName', (req, res) => {
     db.set(`superheroLists.${listName}`, superheroesToAdd).write();
     res.json({ message: `Superheroes added to list '${listName}' successfully` });
 });
+
+app.delete('/api/lists/:listName', (req, res) => {
+  const listName = req.params.listName;
+
+  const existingList = db.get(`superheroLists.${listName}`).value();
+
+  if (!existingList) {
+    return res.status(404).json({ error: `List with name '${listName}' does not exist` });
+  }
+
+  db.unset(`superheroLists.${listName}`).write();
+  res.json({ message: `Superhero list '${listName}' deleted successfully` });
+});
+
 
 
 
