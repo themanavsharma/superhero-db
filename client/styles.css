@@ -9,12 +9,29 @@ body {
     color: #000000;
     margin: 0 auto;
     text-align: center;
+    font-size: 40px;
+    margin-bottom: 20px;
   }
 
   h2 {
     margin: 0 auto;
-    margin-top: 30px;
+    font-size: 30px;
   }
+
+  h3 {
+    margin-top: 30px;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+  }
+
+  .search-container {
+    border: 1px solid black;
+    border-radius: 20px; 
+    padding: 20px; 
+    margin-bottom: 30px; 
+  }
+  
   
   label {
     margin-right: 10px;

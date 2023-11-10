@@ -6,46 +6,68 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>Superheros</h1>
+  <h1>Superheroes</h1>
+  <div class="search-container">
+    <h2>Search</h2>
+    <h3>General Search:</h3>
+    <label>Enter Superhero ID:</label>
+    <input type="text" id="superheroId">
+    <button onclick="getSuperheroInfo()">Get Info</button>
+    <button onclick="getSuperheroPowers()">Get Powers</button>
   
-  <h2>General Search:</h2>
-  <label>Enter Superhero ID:</label>
-  <input type="text" id="superheroId">
-  <button onclick="getSuperheroInfo()">Get Info</button>
-  <button onclick="getSuperheroPowers()">Get Powers</button>
+  
+    <h3>Specifc Search:</h3>
+  
+    <label>Choose a field:</label>
+    <select class="specificSearch" id="fieldDropdown">
+  
+      <option value="name">Name</option>
+      <option value="gender">Gender</option>
+      <option value="eye color">Eye Color</option>
+      <option value="hair color">Hair Color</option>
+      <option value="height">Height</option>
+      <option value="publisher">Publisher</option>
+      <option value="height">Height</option>
+      <option value="skin color">Skin Color</option>
+      <option value="alignment">Alignment</option>
+      <option value="weight">Weight</option>
+     
+    </select>
+  
+    <br>
+  
+    <label>Enter a Pattern:</label>
+    <input type="text" class="specificSearch" id="patternInput">
+  
+    <br>
+  
+    <label>Enter number of matching results:</label>
+    <input type="number" class="specificSearch" id="resultsInput">
+  
+    <br>
+  
+    <button onclick="searchSuperheroes()">Search</button>
+
+  </div>
 
 
-  <h2>Specifc Search:</h2>
+  <div class="search-container">
+    <h2>Custom Lists</h2>
+    <h3>Create a List:</h3>
+    <label>Enter list name:</label>
+    <input type="text" id="listNameInput">
+    <button onclick="createList()">Create List</button>
 
-  <label>Choose a field:</label>
-  <select class="specificSearch" id="fieldDropdown">
+    <h3>Add to a List:</h3>
+    <label>Enter list name:</label>
+    <input type="text" id="addToListNameInput">
+    <br>
+    <label>Enter superhero IDs:</label>
+    <input type="text" id="superheroIdsInput">
+    <br>
+    <button onclick="addToSuperheroList()">Add</button>
+  </div>
 
-    <option value="name">Name</option>
-    <option value="gender">Gender</option>
-    <option value="eye color">Eye Color</option>
-    <option value="hair color">Hair Color</option>
-    <option value="height">Height</option>
-    <option value="publisher">Publisher</option>
-    <option value="height">Height</option>
-    <option value="skin color">Skin Color</option>
-    <option value="alignment">Alignment</option>
-    <option value="weight">Weight</option>
-   
-  </select>
-
-  <br>
-
-  <label>Enter a Pattern:</label>
-  <input type="text" class="specificSearch" id="patternInput">
-
-  <br>
-
-  <label>Enter number of matching results:</label>
-  <input type="number" class="specificSearch" id="resultsInput">
-
-  <br>
-
-  <button onclick="searchSuperheroes()">Search</button>
 
 
  

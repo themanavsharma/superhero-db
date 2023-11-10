@@ -56,3 +56,45 @@ async function searchSuperheroes() {
     }
 }
 
+async function createList() {
+  const listName = document.getElementById('listNameInput').value;
+
+  if (!listName) {
+    alert('Please enter a list name.');
+    return;
+  }
+
+  try {
+    const response = await fetch(`/api/lists/${listName}`, {
+      method: 'POST',
+    });
+
+    if (response.ok) {
+      alert(`List '${listName}' created successfully`);
+    } else {
+      const data = await response.json();
+      alert(`Error: ${data.error}`);
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('An error occurred while creating the list.');
+  }
+}
+
+async function addToSuperheroList() {
+  const listName = document.getElementById('addToListNameInput').value;
+  const superheroIds = document.getElementById('superheroIdsInput').value;
+
+  try {
+      const response = await fetch(`http://localhost:3000/api/lists/${listName}/${superheroIds}`, {
+          method: 'POST',
+      });
+
+      const data = await response.json();
+      alert(data.message);
+  } catch (error) {
+      alert(`Error: ${error.message}`);
+  }
+}
+
+
