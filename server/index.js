@@ -3,7 +3,15 @@ const fs = require('fs');
 const port = 3000;
 const path = require('path');
 
+const low = require('lowdb');
+const bodyParser = require('body-parser');
+const FileSync = require('lowdb/adapters/FileSync');
+
+
 const app = express();
+
+
+app.use(bodyParser.json());
 
 // Serve static files from the 'client' directory
 app.use(express.static(path.join(__dirname, '../client')));
@@ -104,6 +112,26 @@ app.get('/api/:field/:pattern/:n', (req, res) => {
   }
 });
 
+
+const adapter = new FileSync('db.json');
+const db = low(adapter);
+
+db.defaults({ superheroLists: {} }).write();
+
+
+app.post('/api/lists/:listName', (req, res) => {
+    const listName = req.params.listName;
+  
+
+    if (db.get(`superheroLists.${listName}`).value()) {
+
+      res.status(400).json({ error: `List with name '${listName}' already exists` });
+    } else {
+
+      db.set(`superheroLists.${listName}`, []).write();
+      res.json({ message: `Superhero list '${listName}' created successfully` });
+    }
+  });
 
 
 
