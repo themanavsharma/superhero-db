@@ -30,7 +30,7 @@ async function getSuperheroPowers() {
     }
   }
 
-
+// function to search superheroes based on specified criteria
 async function searchSuperheroes() {
 
     const field = document.getElementById('fieldDropdown').value.toLowerCase();
@@ -39,16 +39,16 @@ async function searchSuperheroes() {
 
     try {
         const response = await fetch(`http://localhost:3000/api/${field}/${pattern}/${n}`);
-        const data = await response.json();
+        const superheroes = await response.json();
 
         if (response.ok) {
       
-            console.log('Search results:', data);
-            document.getElementById('superheroInfo').innerHTML = JSON.stringify(data, null, 2);
+            console.log('Search results:', superheroes); // logs the search results
+            document.getElementById('superheroInfo').innerHTML = JSON.stringify(superheroes, null, 2);
 
         } else {
        
-            console.error('Error searching superheroes:', data.error);
+            console.error('Error searching superheroes:', superheroes.error);
         }
     } catch (error) {
 
@@ -56,6 +56,7 @@ async function searchSuperheroes() {
     }
 }
 
+// function to create a superhero list
 async function createList() {
   const listName = document.getElementById('listNameInput').value;
 
@@ -81,6 +82,8 @@ async function createList() {
   }
 }
 
+
+// function to add superheroes to a list
 async function addToSuperheroList() {
   const listName = document.getElementById('addToListNameInput').value;
   const superheroIds = document.getElementById('superheroIdsInput').value;
@@ -96,5 +99,63 @@ async function addToSuperheroList() {
       alert(`Error: ${error.message}`);
   }
 }
+
+// function to view superhero IDs in a list
+async function viewSuperheroIDs() {
+  const listName = document.getElementById('viewIDsListName').value;
+  const superheroInfoContainer = document.getElementById('superheroInfo');
+
+  try {
+    const response = await fetch(`/api/lists/${listName}/superheroes`);
+    const data = await response.json();
+
+    if (response.ok) {
+      superheroInfoContainer.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+    } else {
+      superheroInfoContainer.innerHTML = `<p>Error: ${data.error}</p>`;
+    }
+  } catch (error) {
+    console.error('Error fetching superhero IDs:', error);
+  }
+}
+
+// function to delete a superhero list
+async function deleteSuperheroList() {
+  const listName = document.getElementById('deleteListName').value;
+
+  try {
+    const response = await fetch(`http://localhost:3000/api/lists/${listName}`, {
+      method: 'DELETE',
+    });
+
+    const result = await response.json();
+    document.getElementById('superheroInfo').innerHTML = JSON.stringify(result, null, 2);
+  } catch (error) {
+    console.log('Error deleting the superhero list:', error);
+  }
+}
+
+// function to view detailed information for a superhero list
+async function viewListInfo() {
+  const listName = document.getElementById('viewListInfoInput').value;
+  const superheroInfoContainer = document.getElementById('superheroInfo');
+
+  try {
+    const response = await fetch(`http://localhost:3000/api/lists/${listName}/superheroes/details`);
+    const data = await response.json();
+
+    if (response.ok) {
+      superheroInfoContainer.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+    } else {
+      superheroInfoContainer.innerHTML = `<p>Error: ${data.error}</p>`;
+    }
+  } catch (error) {
+    console.error('Error fetching list information:', error);
+  }
+}
+
+
+
+
 
 

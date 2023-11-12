@@ -52,23 +52,44 @@
 
 
   <div class="search-container">
+   
     <h2>Custom Lists</h2>
+    
+
     <h3>Create a List:</h3>
     <label>Enter list name:</label>
     <input type="text" id="listNameInput">
-    <button onclick="createList()">Create List</button>
+    <button onclick="createList()">Create</button>
 
-    <h3>Add to a List:</h3>
+
+    <h3>Delete a List:</h3>
     <label>Enter list name:</label>
-    <input type="text" id="addToListNameInput">
+    <input type="text" id="deleteListName">
+    <button onclick="deleteSuperheroList()">Delete </button>
+
+
+    <h3 class="specificSearch">Add to a List:</h3>
+    <label>Enter list name:</label>
+    <input type="text" class="specificSearch" id="addToListNameInput">
     <br>
     <label>Enter superhero IDs:</label>
     <input type="text" id="superheroIdsInput">
     <br>
     <button onclick="addToSuperheroList()">Add</button>
+
+
+    <h3>View List IDs:</h3>
+    <label>Enter list name:</label>
+    <input type="text" id="viewIDsListName">
+    <button onclick="viewSuperheroIDs()">View</button>
+
+    <h3>View List Info:</h3>
+    <label>Enter list name:</label>
+    <input type="text" id="viewListInfoInput">
+    <button onclick="viewListInfo()">View</button>
+
+
   </div>
-
-
 
  
   <div id="superheroInfo"></div>  <!-- this is the cointainer for the response -->
