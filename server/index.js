@@ -155,7 +155,7 @@ app.post('/api/lists/:listName', (req, res) => {
 
     if (db.get(`superheroLists.${listName}`).value()) {
 
-      res.status(400).json({ error: `List with name '${listName}' already exists` });
+      res.status(400).json({ error: `The list ${listName} already exists` });
     } else {
 
       db.set(`superheroLists.${listName}`, []).write();
@@ -183,6 +183,7 @@ app.post('/api/lists/:listName', (req, res) => {
     res.json({ message: `Superheroes added to list '${listName}' successfully` });
 });
 
+//deletes the given name's superhero list
 app.delete('/api/lists/:listName', (req, res) => {
   const listName = req.params.listName;
 
@@ -195,8 +196,6 @@ app.delete('/api/lists/:listName', (req, res) => {
   db.unset(`superheroLists.${listName}`).write();
   res.json({ message: `Superhero list '${listName}' deleted successfully` });
 });
-
-
 
 
 

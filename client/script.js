@@ -48,11 +48,11 @@ async function searchSuperheroes() {
 
         } else {
        
-            console.error('Error searching superheroes:', superheroes.error);
+            console.log('Error searching superheroes:', superheroes.error);
         }
     } catch (error) {
 
-        console.error('Unexpected error:', error);
+        console.log('Unexpected error:', error);
     }
 }
 
@@ -64,20 +64,19 @@ async function createList() {
     alert('Please enter a list name.');
     return;
   }
-
   try {
-    const response = await fetch(`/api/lists/${listName}`, {
+    const response = await fetch(`/api/lists/${encodeURIComponent(listName)}`, {
       method: 'POST',
     });
 
     if (response.ok) {
-      alert(`List '${listName}' created successfully`);
+      alert(`List ${listName} created successfully`);
     } else {
       const data = await response.json();
       alert(`Error: ${data.error}`);
     }
   } catch (error) {
-    console.error('Error:', error);
+    console.log('Error:', error);
     alert('An error occurred while creating the list.');
   }
 }
@@ -112,10 +111,11 @@ async function viewSuperheroIDs() {
     if (response.ok) {
       superheroInfoContainer.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
     } else {
-      superheroInfoContainer.innerHTML = `<p>Error: ${data.error}</p>`;
+      alert(`Error: ${errorMessage}`)
     }
   } catch (error) {
-    console.error('Error fetching superhero IDs:', error);
+    console.log('Error fetching the superhero IDs:', error);
+    alert(`Error: ${errorMessage}`)
   }
 }
 
@@ -124,12 +124,15 @@ async function deleteSuperheroList() {
   const listName = document.getElementById('deleteListName').value;
 
   try {
-    const response = await fetch(`http://localhost:3000/api/lists/${listName}`, {
+    const response = await fetch(`http://localhost:3000/api/lists/${encodeURIComponent(listName)}`, {
       method: 'DELETE',
     });
 
     const result = await response.json();
-    document.getElementById('superheroInfo').innerHTML = JSON.stringify(result, null, 2);
+    //document.getElementById('superheroInfo').innerHTML = JSON.stringify(result, null, 2);
+    if(response.ok){
+      alert(`Super hero list ${listName} successfully deleted`)
+    }
   } catch (error) {
     console.log('Error deleting the superhero list:', error);
   }
@@ -150,7 +153,7 @@ async function viewListInfo() {
       superheroInfoContainer.innerHTML = `<p>Error: ${data.error}</p>`;
     }
   } catch (error) {
-    console.error('Error fetching list information:', error);
+    console.log('Error fetching list information:', error);
   }
 }
 
