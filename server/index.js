@@ -1,204 +1,116 @@
+// server/server.js
+
+// Import necessary modules and libraries
 const express = require('express');
-const fs = require('fs');
-const port = 3000;
 const path = require('path');
-
-const low = require('lowdb');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const session = require('express-session');
 const bodyParser = require('body-parser');
-const FileSync = require('lowdb/adapters/FileSync');
+const mongoose = require('mongoose');
+const passportLocalMongoose = require('passport-local-mongoose');
 
-
+// Create an instance of the Express application
 const app = express();
+// Set the port for the server to run on, using the environment variable PORT or default to 3001
+const PORT = process.env.PORT || 3001;
 
+// Connect to your MongoDB database (replace 'your_database_uri' with your actual MongoDB URI)
+mongoose.connect('your_database_uri', { useNewUrlParser: true, useUnifiedTopology: true });
 
-app.use(bodyParser.json());
+// Configure Express to use body-parser for parsing incoming request bodies and sessions for user authentication
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(session({ secret: 'your_secret_key', resave: false, saveUninitialized: false }));
+app.use(passport.initialize());
+app.use(passport.session());
 
-// Serve static files from the 'client' directory
-app.use(express.static(path.join(__dirname, '../client')));
-
-
-const data = fs.readFileSync(path.join(__dirname, 'superhero_info.json'), 'utf-8'); // reads superhero info data from the json file
-const superheroInfoData = JSON.parse(data); // converts the json data into a js object
-
-// gets the superhero information by ID
-app.get('/api/superhero/:id', (req, res) => {
-   
-    const superheroId = parseInt(req.params.id); // gets the superhero ID from the url
-    const superhero = superheroInfoData.find((hero) => hero.id === superheroId); // finds superhero in the array based on ID
-  
-    if (!superhero) { // return a 404 error if the superhero is not found
-      return res.status(404).json({ error: 'Superhero not found' });
-    }
-
-    res.json(superhero); // send the superhero info as a json in the response
-
-  });
-
-
-
-const powersData = fs.readFileSync(path.join(__dirname, 'superhero_powers.json'), 'utf-8'); // reads superhero powers data from the json file
-const superheroPowersData = JSON.parse(powersData); // converts the json data into a js object
-
-// gets the superhero powers information by ID
-app.get('/api/superhero/:id/powers', (req, res) => {
-    
-    const superheroId = parseInt(req.params.id); // gets the superhero ID from the url
-    const superhero = superheroInfoData.find((hero) => hero.id === superheroId); // finds superhero in the array based on ID
-
-    if (!superhero) { // return a 404 error if the superhero is not found
-    return res.status(404).json({ error: 'Superhero not found' });
-    }
-
-    const superheroPowers = superheroPowersData.find((powers) => powers.hero_names === superhero.name); // finds the powers of the superhero based on their name, retrieved from the info
-
-    if (!superheroPowers) { // return a 404 error if the superhero powers is not found
-    return res.status(404).json({ error: 'Superhero powers not found' });
-    }
-
-    res.json(superheroPowers); // send the superhero powers as a json in the response
-
+// Define the User model using Mongoose schema
+const UserSchema = new mongoose.Schema({
+  email: String,
+  password: String,
+  nickname: String,
+  disabled: Boolean,
 });
 
+// Plugin Passport-Local Mongoose to simplify handling local authentication
+UserSchema.plugin(passportLocalMongoose);
+
+// Create the User model based on the schema
+const User = mongoose.model('User', UserSchema);
+
+// Configure Passport local strategy using Passport-Local
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+// Serve static assets (e.g., CSS, JS, images) from the React app's build directory
+app.use(express.static(path.join(__dirname, '../client/my-react-app/build')));
 
 
-// gets the publisher names 
-app.get('/api/publishers', (req, res) => {
-
-    const publisherNames = superheroInfoData.map(hero => hero.Publisher).filter(Boolean); //get all the publisher names 
-  
-    if (publisherNames.length === 0) { // return a 404 error if no publishers are found
-      return res.status(404).json({ error: 'No publishers found' });
-    }
-
-    res.json({ publishers: publisherNames }); // send the publisher names as a json in the response
-
-});
 
 
+// Registration endpoint for handling user sign-up requests
+app.post('/api/signup', async (req, res) => {
+  const { email, password, nickname } = req.body;
 
+  try {
+    // Register a new user using Passport-Local Mongoose
+    const user = await User.register(new User({ email, nickname }), password);
 
-const theData = fs.readFileSync(path.join(__dirname, 'superhero_info.json'), 'utf-8');
-const theSuperheroInfoData = JSON.parse(theData).map(hero => {
-  const lowercasedHero = {};
-  for (const key in hero) {
-    lowercasedHero[key.toLowerCase()] = hero[key];
+    // Optionally, send a verification email here if needed
+
+    // Respond with a success message if registration is successful
+    res.status(201).json({ message: 'Registration successful' });
+  } catch (err) {
+    // Handle registration failure and respond with an error message
+    res.status(500).json({ error: 'Registration failed' });
   }
-  return lowercasedHero;
-});
-
-// returns all the info for a given list name
-app.get('/api/lists/:listName/superheroes/details', (req, res) => {
-  const listName = req.params.listName;
-
-  const existingList = db.get(`superheroLists.${listName}`).value();
-
-  if (!existingList) {
-    return res.status(404).json({ error: `List with name '${listName}' does not exist` });
-  }
-
-  res.json(existingList);
 });
 
 
-//returns the ids for a given list name
-app.get('/api/lists/:listName/superheroes', (req, res) => {
-  const listName = req.params.listName;
 
-  const existingList = db.get(`superheroLists.${listName}`).value();
 
-  if (!existingList) {
-    return res.status(404).json({ error: `List with name '${listName}' does not exist` });
-  }
-
-  const superheroIds = existingList.map(thing => thing.id);
-
-  res.json({ superheroIds });
+// Login endpoint for handling user login requests
+app.post('/api/login', passport.authenticate('local'), (req, res) => {
+  // Authentication successful, respond with a success message
+  res.json({ message: 'Login successful' });
 });
 
 
-//returns n number of superheroes that match a field and pattern
-app.get('/api/:field/:pattern/:n', (req, res) => {
-  const { field, pattern, n } = req.params;
-  console.log('Received request with parameters:', { field, pattern, n });
 
-  const lowercasePattern = pattern.toLowerCase();
 
-  const matchingSuperheroes = theSuperheroInfoData.filter(hero => {
-    console.log('Checking:', { field, pattern, heroField: hero[field].toLowerCase() });
+// Logout endpoint for logging out authenticated users
+app.get('/api/logout', (req, res) => {
+  req.logout(); // Passport method to log out the user
+  res.json({ message: 'Logout successful' });
+});
 
-    return hero[field].toLowerCase().includes(lowercasePattern);
-  });
 
-  console.log('Matching superheroes:', matchingSuperheroes);
 
-  if (matchingSuperheroes.length === 0) {
- 
-    res.status(404).json({ error: 'No superheroes found matching the criteria' });
+
+// Example protected route, accessible only to authenticated users
+app.get('/api/protected', (req, res) => {
+  if (req.isAuthenticated()) {
+    // User is authenticated, respond with a success message
+    res.json({ message: 'You are authenticated' });
   } else {
-
-    const result = n ? matchingSuperheroes.slice(0, n) : matchingSuperheroes;
-
-    res.json(result);
+    // User is not authenticated, respond with an authentication error
+    res.status(401).json({ error: 'Authentication required' });
   }
 });
 
 
-const adapter = new FileSync('db.json');
-const db = low(adapter);
-
-db.defaults({ superheroLists: {} }).write();
-
-//creates a list with a given name
-app.post('/api/lists/:listName', (req, res) => {
-    const listName = req.params.listName;
-  
-
-    if (db.get(`superheroLists.${listName}`).value()) {
-
-      res.status(400).json({ error: `The list ${listName} already exists` });
-    } else {
-
-      db.set(`superheroLists.${listName}`, []).write();
-      res.json({ message: `Superhero list '${listName}' created successfully` });
-    }
-  });
-
-//adds given superheros to a given list
-  app.post('/api/lists/:listName/:superheroIds', (req, res) => {
-    const listName = req.params.listName;
-    const superheroIds = req.params.superheroIds;
-
-    const existingList = db.get(`superheroLists.${listName}`).value();
-
-    if (!existingList) {
-        return res.status(404).json({ error: `List with name '${listName}' does not exist` });
-    }
 
 
-    const newIds = superheroIds.split(',').map(id => parseInt(id.trim()));
-    const superheroesToAdd = superheroInfoData.filter(hero => newIds.includes(hero.id));
-
-
-    db.set(`superheroLists.${listName}`, superheroesToAdd).write();
-    res.json({ message: `Superheroes added to list '${listName}' successfully` });
-});
-
-//deletes the given name's superhero list
-app.delete('/api/lists/:listName', (req, res) => {
-  const listName = req.params.listName;
-
-  const existingList = db.get(`superheroLists.${listName}`).value();
-
-  if (!existingList) {
-    return res.status(404).json({ error: `List with name '${listName}' does not exist` });
-  }
-
-  db.unset(`superheroLists.${listName}`).write();
-  res.json({ message: `Superhero list '${listName}' deleted successfully` });
+// Handle other routes by serving the React app's index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/my-react-app/build', 'index.html'));
 });
 
 
 
-app.listen(port, () => { //starts the server and listens on port 3000
-    console.log(`Server is running on port ${port}`);
-  });
+
+// Start the server and listen on the specified port
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
