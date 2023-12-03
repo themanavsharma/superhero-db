@@ -5,11 +5,23 @@ h2 {
     font-size: 30px;
   }
 
-.search-container {
+/* .search-container {
     border: 1px solid black;
     border-radius: 20px;
     padding: 20px;
     margin-bottom: 30px;
+    background: rgb(203, 234, 243);
+  } */
+
+
+  .container {
+    border: 1px solid black;
+    border-radius: 20px;
+    padding: 20px;
+    margin: 20px;
+    margin-bottom: 30px;
+    margin-top: 0px;
+    flex: 1 /* Each container takes up equal space */
   }
   
   label {
@@ -40,5 +52,9 @@ h2 {
 
   button.btn-left-margin{
     margin-left:10px;
+  }
+
+  .label-left-margin{
+    margin-left:20px;
   }
   

@@ -1,3 +1,33 @@
 .top-margin{
     margin-top: 15px;
 }
+
+
+.flex-container {
+    display: flex;
+  }
+
+
+.container {
+    border: 1px solid black;
+    border-radius: 20px;
+    padding: 20px;
+    margin: 20px;
+    margin-bottom: 30px;
+    margin-top: 0px;
+    flex: 1 /* Each container takes up equal space */
+  }
+
+  #signup.container{
+    background: rgb(203, 234, 243);
+  }
+
+  #login.container{
+    background: rgb(203, 243, 219);
+    
+  }
+
+  p{
+    line-height: 27px;
+  }
+
