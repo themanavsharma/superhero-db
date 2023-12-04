@@ -6,6 +6,11 @@ const app = express();
 const port = 8080; // Or any other port you prefer
 const cors = require('cors'); // Require the cors package
 
+const low = require('lowdb');
+const bodyParser = require('body-parser');
+const FileSync = require('lowdb/adapters/FileSync');
+
+app.use(express.json());  // Add this line to parse JSON requests
 
 // Apply cors middleware to allow cross-origin requests
 app.use(cors());
@@ -114,6 +119,29 @@ app.get('/api/searchSuperheroes/:power/:race/:name/:publisher', (req, res) => {
   // console.log('Filtered by Name:', filteredByName);
 
   return res.json(filteredByPublisher);
+});
+
+
+const adapter = new FileSync('users.json');
+const db = low(adapter);
+
+// Set defaults for the 'users' collection
+db.defaults({ users: [] }).write();
+
+// Endpoint to handle user registration
+app.post('/api/register', (req, res) => {
+  const newUser = req.body;
+
+  // Check if user with the same email already exists
+  const existingUser = db.get('users').find({ email: newUser.email }).value();
+  if (existingUser) {
+    return res.status(400).json({ error: 'User with this email already exists' });
+  }
+
+  // Add new user to the database
+  db.get('users').push(newUser).write();
+
+  res.status(201).json({ message: 'User registered successfully' });
 });
 
 

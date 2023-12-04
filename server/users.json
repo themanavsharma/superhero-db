@@ -1,0 +1,24 @@
+{
+  "users": [
+    {
+      "email": "nafuhato@tutuapp.bid",
+      "password": "abc123",
+      "nickname": "HelloHello"
+    },
+    {
+      "email": "livaho@tutuapp.bid",
+      "password": "abc123456",
+      "nickname": "Thisisatest"
+    },
+    {
+      "email": "bofolawu@socam.me",
+      "password": "thisisapassword",
+      "nickname": "Hellooooo"
+    },
+    {
+      "email": "qoxuly@tutuapp.bid",
+      "password": "hellohello",
+      "nickname": "Thisisanotherone"
+    }
+  ]
+}

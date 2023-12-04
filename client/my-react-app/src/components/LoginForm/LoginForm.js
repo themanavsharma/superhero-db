@@ -5,6 +5,7 @@ import "./LoginForm.css"
 import { createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, onAuthStateChanged, signOut} from "firebase/auth";
 import { auth } from "../../config/firebase.config"
 
+
 const LoginForm = () => {
 
   const [email, setEmail ] = useState("");
@@ -12,15 +13,16 @@ const LoginForm = () => {
   const [nickname, setNickname] = useState("");
   const [loggedIn, setLoggedIn] = useState(false);
 
-  const signUpAction = async () =>{
-    await createUserWithEmailAndPassword(auth, email, password).then(
-      async (userCred) => {
-        const user = userCred.user
-        await sendEmailVerification(user)
-        console.log('Success')
-      }
-    );
-  }
+  // const signUpAction = async () =>{
+  //   await createUserWithEmailAndPassword(auth, email, password).then(
+  //     async (userCred) => {
+  //       const user = userCred.user
+  //       await sendEmailVerification(user)
+  //       console.log('Success')
+  //     }
+  //   );
+
+  // }
 
   const handleNicknameChange = (data) => {
     setNickname(data);
@@ -34,6 +36,68 @@ const LoginForm = () => {
     setPassword(data);
   };
 
+  // const signUpAction = async () => {
+  //   try {
+  //     const userCred = await createUserWithEmailAndPassword(auth, email, password);
+  //     const user = userCred.user;
+      
+  //     // Additional registration logic
+  //     const registrationData = { email, password, nickname };
+  //     await fetch('http://localhost:8080/api/register', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(registrationData),
+  //     });
+
+  //     // Send email verification
+  //     await sendEmailVerification(user);
+  //     console.log('Success');
+  //   } catch (error) {
+  //     console.error("Registration failed", error.message);
+  //   }
+  // };
+
+  const signUpAction = async () => {
+    try {
+      const userCred = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCred.user;
+  
+      // Additional registration logic
+      const registrationData = { email, password, nickname };
+      await fetch('http://localhost:8080/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(registrationData),
+      });
+  
+      // Send email verification
+      await sendEmailVerification(user);
+      console.log('Success');
+  
+      // Avoid automatic login after registration
+      // You may want to redirect the user to a different page or show a confirmation message
+    } catch (error) {
+      console.error("Registration failed", error.message);
+    }
+  };
+  
+
+  
+
+  // const handleSignOut = async () => {
+  //   // Sign out the user
+  //   try {
+  //     await signOut(auth);
+  //     setLoggedIn(false); // Update the state to reflect the user is no longer logged in
+  //   } catch (error) {
+  //     console.error('Error signing out:', error);
+  //   }
+  // };
+
   const handleSignOut = async () => {
     // Sign out the user
     try {
@@ -46,13 +110,30 @@ const LoginForm = () => {
 
   
 
+  // const loginAction = async () => {
+  //   try {
+  //     const userCred = await signInWithEmailAndPassword(auth, email, password);
+  //     const user = userCred.user;
+
+  //     if (user && user.emailVerified) {
+  //       console.log("Login success");
+  //       // Add any further actions you want to perform on successful login
+  //     } else {
+  //       console.log("Email not verified or user not found");
+  //     }
+  //   } catch (error) {
+  //     console.error("Login failed", error.message);
+  //   }
+  // };
+
   const loginAction = async () => {
     try {
       const userCred = await signInWithEmailAndPassword(auth, email, password);
       const user = userCred.user;
-
+  
       if (user && user.emailVerified) {
         console.log("Login success");
+        setLoggedIn(true); // Update loggedIn state here
         // Add any further actions you want to perform on successful login
       } else {
         console.log("Email not verified or user not found");
@@ -61,6 +142,10 @@ const LoginForm = () => {
       console.error("Login failed", error.message);
     }
   };
+  
+
+
+  
 
   // useEffect (() => {
   //    auth.onAuthStateChanged((userCred) => {
@@ -68,11 +153,22 @@ const LoginForm = () => {
   //   })
   // }, [])
 
+  // useEffect(() => {
+  //   const unsubscribe = onAuthStateChanged(auth, (user) => {
+  //     // If the user is logged in, user will be truthy; otherwise, it will be falsy
+  //     console.log('User:', user);
+  //     setLoggedIn(!!user);
+  //   });
+  
+  //   // Cleanup the subscription when the component unmounts
+  //   return () => unsubscribe();
+  // }, []);
+  
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      // If the user is logged in, user will be truthy; otherwise, it will be falsy
+      // If the user is logged in and email is verified, set loggedIn to true
       console.log('User:', user);
-      setLoggedIn(!!user);
+      setLoggedIn(!!user && user.emailVerified);
     });
   
     // Cleanup the subscription when the component unmounts
