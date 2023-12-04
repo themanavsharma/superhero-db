@@ -15,7 +15,7 @@
     margin: 20px;
     margin-bottom: 30px;
     margin-top: 0px;
-    flex: 1 /* Each container takes up equal space */
+    flex: 1 
   }
 
   #signup.container{
@@ -24,6 +24,11 @@
 
   #login.container{
     background: rgb(203, 243, 219);
+    
+  }
+
+  #about.container{
+    background: rgb(243, 232, 203);
     
   }
 

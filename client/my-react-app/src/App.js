@@ -4,7 +4,7 @@
 import React from 'react';
 import './App.css';
 import SearchContainer from './components/SearchContainer/SearchContainer';
-import CustomLists from './components/CustomLists';
+import CustomLists from './components/CustomLists/CustomLists';
 import LoginForm from './components/LoginForm/LoginForm.js';
 
 const App = () => {
@@ -14,9 +14,6 @@ const App = () => {
 
       <LoginForm/>
       <SearchContainer/>
- 
-  
-
   
     </div>
   );

@@ -129,7 +129,7 @@ const LoginForm = () => {
       </> )}
 
 
-    <div class="container">
+    <div class="container" id="about">
       <h2>About:</h2>
       <p>Welcome to SuperheroDB—your hub for all things superheroes! Dive into a world where information meets excitement. Explore, discover, and curate your favorite superhero details with our user-friendly platform.</p>
     </div>

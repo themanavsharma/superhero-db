@@ -1,0 +1,34 @@
+.superhero-container{
+    border: 1px solid black;
+    border-radius: 20px;
+    padding: 20px;
+    margin: 20px;
+    margin-bottom: 30px;
+    margin-top: 0px;
+    width: 250px; /* Set a fixed width */
+    background-color: rgb(241, 254, 237);
+    /* flex: 1 Each container takes up equal space */
+    
+}
+
+.view-more-info-btn {
+    margin-top: 0px;
+    padding: 5px 10px;
+    background-color: #22402f;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+  }
+
+  .search-ddg-btn {
+    margin-top: 0px;
+    margin-left: 10px;
+    padding: 5px 10px;
+    background-color: #17703e;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+  }
+
