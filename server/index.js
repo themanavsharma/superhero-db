@@ -145,6 +145,28 @@ app.post('/api/register', (req, res) => {
 });
 
 
+const listsAdapter = new FileSync('db.json');
+const listsDB = low(listsAdapter);
+
+// // Set defaults for the 'superheroLists' collection
+// listsDB.defaults({ superheroLists: {} }).write();
+
+// Set defaults for the 'superheroLists' collection
+listsDB.defaults([]).write();  // Assuming superheroLists is an array
+
+
+// // Endpoint to get superhero lists
+// app.get('/api/lists', (req, res) => {
+//   const superheroLists = listsDB.get('superheroLists').value();
+//   res.json({ superheroLists });
+// });
+
+// Endpoint to get superhero lists
+app.get('/api/lists', (req, res) => {
+  const superheroLists = listsDB.value();  // Directly use the value of the JSON file
+  res.json(superheroLists);
+});
+
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

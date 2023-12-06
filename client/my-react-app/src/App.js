@@ -6,6 +6,7 @@ import './App.css';
 import SearchContainer from './components/SearchContainer/SearchContainer';
 import CustomLists from './components/CustomLists/CustomLists';
 import LoginForm from './components/LoginForm/LoginForm.js';
+import HeroLists from './components/HeroLists/HeroLists'
 
 const App = () => {
   return (
@@ -14,6 +15,7 @@ const App = () => {
 
       <LoginForm/>
       <SearchContainer/>
+      <HeroLists/>
   
     </div>
   );

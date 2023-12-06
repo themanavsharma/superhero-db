@@ -182,7 +182,7 @@ const LoginForm = () => {
       {loggedIn ? null : ( <>
       
         <div className="container" id="signup">
-          <h2>Sign Up:</h2>
+          <h2>Sign Up</h2>
           
           <form>
             <div class="top-margin">
@@ -204,7 +204,7 @@ const LoginForm = () => {
         </div>
 
       <div className="container" id="login">
-      <h2>Login:</h2>
+      <h2>Login</h2>
 
       <form>
         <div class="top-margin">
@@ -226,7 +226,7 @@ const LoginForm = () => {
 
 
     <div class="container" id="about">
-      <h2>About:</h2>
+      <h2>About</h2>
       <p>Welcome to SuperheroDB—your hub for all things superheroes! Dive into a world where information meets excitement. Explore, discover, and curate your favorite superhero details with our user-friendly platform.</p>
     </div>
 

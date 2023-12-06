@@ -1,0 +1,10 @@
+#superheroes-lists.flex-container {
+    display: flex;
+    flex-wrap: wrap; /* Allow flex items to wrap onto multiple lines */
+    justify-content: center; /* Center items horizontally */
+  }
+
+  #hero-lists-container{
+    background-color: rgb(242, 254, 254);
+  }
+

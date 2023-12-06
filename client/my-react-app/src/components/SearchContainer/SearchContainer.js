@@ -60,7 +60,7 @@ const handleSearch = async () => {
 
   return (
     <div>
-    <div className="container">
+    <div className="container" id="searching-container">
       <h2>Search</h2>
 
 
@@ -79,19 +79,20 @@ const handleSearch = async () => {
       <input type="text" className="specificSearch" id="publisherField" />
 
 
-      <br />
+      {/* <br /> */}
 
-      <button onClick={handleSearch}>Search</button>
-
-
-
-    </div>
+      <button onClick={handleSearch} class="label-left-margin">Search</button>
 
     {/* Display matching superheroes */}
     <div className="flex-container" id="matching-superheroes">
     {matchingSuperheroes.map(superhero => (
       <SuperheroResult key={superhero.id} superhero={superhero} />
     ))}
+
+
+    </div>
+
+
   </div>
   </div>
   );

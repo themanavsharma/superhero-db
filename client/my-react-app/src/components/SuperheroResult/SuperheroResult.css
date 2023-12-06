@@ -3,10 +3,10 @@
     border-radius: 20px;
     padding: 20px;
     margin: 20px;
-    margin-bottom: 30px;
-    margin-top: 0px;
+    margin-bottom: 15px;
+    margin-top: 15px;
     width: 250px; /* Set a fixed width */
-    background-color: rgb(241, 254, 237);
+    background-color: rgb(231, 254, 223);
     /* flex: 1 Each container takes up equal space */
     
 }
