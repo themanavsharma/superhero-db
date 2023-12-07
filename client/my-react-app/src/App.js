@@ -16,6 +16,7 @@ const App = () => {
       <LoginForm/>
       <SearchContainer/>
       <HeroLists/>
+      <CustomLists />
   
     </div>
   );

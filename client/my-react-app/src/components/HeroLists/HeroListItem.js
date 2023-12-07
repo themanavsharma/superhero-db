@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import './HeroListItem.css';
 
 const HeroListItem = ({ list }) => {
-  const { listName, lastModified, nickname, ids, averageRating } = list;
+  const { listName, lastModified, nickname, ids, averageRating, description } = list;
   const [detailedInfo, setDetailedInfo] = useState(null);
 
   const handleViewMoreInfo = async () => {
@@ -41,17 +41,19 @@ const HeroListItem = ({ list }) => {
       {/* Additional rendering for heroes based on ids */}
       {detailedInfo && (
         <div>
-        <h4>Detailed Information:</h4>
-        <ul>
-          {detailedInfo.map((hero) => (
-            <li key={hero.id}>
-              {`${hero.name} - Publisher: ${hero.publisher}`}
-              {hero.powers && (
-                <p>Powers: {hero.powers.join(', ')}</p>
-              )}
-            </li>
-          ))}
-        </ul>
+          <h4>Detailed Information:</h4>
+          {description && <p>Description: {description}</p>}
+          <ul>
+            {detailedInfo.map((hero) => (
+              <li key={hero.id}>
+                {`${hero.name} - Publisher: ${hero.publisher}`}
+                {hero.powers && (
+                  <p>Powers: {hero.powers.join(', ')}</p>
+                )}
+              </li>
+            ))}
+          </ul>
+
         </div>
       )}
 
@@ -63,19 +65,3 @@ const HeroListItem = ({ list }) => {
 };
 
 export default HeroListItem;
-
-
-
-// <div>
-// <h4>Detailed Information:</h4>
-// <ul>
-//   {detailedInfo.map((hero) => (
-//     <li key={hero.id}>
-//       {`${hero.name} - Publisher: ${hero.publisher}`}
-//       {hero.powers && (
-//         <p>Powers: {hero.powers.join(', ')}</p>
-//       )}
-//     </li>
-//   ))}
-// </ul>
-// </div>

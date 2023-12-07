@@ -161,9 +161,15 @@ listsDB.defaults([]).write();  // Assuming superheroLists is an array
 //   res.json({ superheroLists });
 // });
 
+// // Endpoint to get superhero lists
+// app.get('/api/lists', (req, res) => {
+//   const superheroLists = listsDB.value();  // Directly use the value of the JSON file
+//   res.json(superheroLists);
+// });
+
 // Endpoint to get superhero lists
 app.get('/api/lists', (req, res) => {
-  const superheroLists = listsDB.value();  // Directly use the value of the JSON file
+  const superheroLists = listsDB.value().filter((list) => list.isPublic);  // Filter lists with isPublic: true
   res.json(superheroLists);
 });
 
