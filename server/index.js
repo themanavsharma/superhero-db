@@ -168,6 +168,75 @@ app.get('/api/lists', (req, res) => {
 });
 
 
+
+// // Endpoint to get detailed information for a superhero by ID
+// app.get('/api/superhero/:id', (req, res) => {
+//   const { id } = req.params;
+
+//   // Fetch superhero information from superhero_info.json
+//   const superhero = infoData.find((hero) => hero.id === parseInt(id));
+
+//   // Fetch superhero powers from superhero_powers.json
+//   superhero.powers = powersData[superhero.name];
+
+//   res.json(superhero);
+// });
+
+// // Endpoint to get detailed information for a superhero by ID
+// app.get('/api/superhero/:id', (req, res) => {
+//   const { id } = req.params;
+
+//   // Fetch superhero information from superhero_info.json
+//   const superhero = infoData.find((hero) => hero.id === parseInt(id));
+
+//   // Fetch superhero powers from superhero_powers.json
+//   superhero.powers = powersData[superhero.name];
+
+//   res.json(superhero);
+// });
+
+// Endpoint to get detailed information for a superhero by ID
+app.get('/api/superhero/:id', (req, res) => {
+  const { id } = req.params;
+
+  // Fetch superhero information from superhero_info.json
+  const superhero = infoData.find((hero) => hero.id === parseInt(id));
+
+  // Send only the name in case superhero is not found
+  if (!superhero) {
+    res.json({ name: 'Superhero Not Found' });
+    return;
+  }
+
+  // Get the superhero name
+  const superheroName = superhero.name;
+
+  // Fetch superhero powers from superhero_powers.json using the superhero name
+  const superheroPowersData = powersData.find((powers) => powers.hero_names === superheroName);
+
+  // Ensure powers are an array, handle undefined case
+  const powers = superheroPowersData
+    ? Object.keys(superheroPowersData).filter((power) => superheroPowersData[power] === 'True')
+    : [];
+
+  // Send only the required information in the desired format
+  const superheroInfo = {
+    id: superhero.id,
+    name: superhero.name,
+    publisher: superhero.Publisher || '',
+    powers,
+  };
+
+  res.json(superheroInfo);
+});
+
+
+
+
+
+
+
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
