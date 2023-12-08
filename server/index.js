@@ -155,17 +155,6 @@ const listsDB = low(listsAdapter);
 listsDB.defaults([]).write();  // Assuming superheroLists is an array
 
 
-// // Endpoint to get superhero lists
-// app.get('/api/lists', (req, res) => {
-//   const superheroLists = listsDB.get('superheroLists').value();
-//   res.json({ superheroLists });
-// });
-
-// // Endpoint to get superhero lists
-// app.get('/api/lists', (req, res) => {
-//   const superheroLists = listsDB.value();  // Directly use the value of the JSON file
-//   res.json(superheroLists);
-// });
 
 // Endpoint to get superhero lists
 app.get('/api/lists', (req, res) => {
@@ -174,32 +163,26 @@ app.get('/api/lists', (req, res) => {
 });
 
 
+// Endpoint to get secure superhero lists
+app.get('/api/secure/lists', (req, res) => {
+  const { nickname } = req.query;
 
-// // Endpoint to get detailed information for a superhero by ID
-// app.get('/api/superhero/:id', (req, res) => {
-//   const { id } = req.params;
+  // Read the existing data from db.json
+  const data = JSON.parse(fs.readFileSync('db.json', 'utf-8'));
 
-//   // Fetch superhero information from superhero_info.json
-//   const superhero = infoData.find((hero) => hero.id === parseInt(id));
+  // Filter public lists
+  const publicLists = data.filter((list) => list.isPublic);
 
-//   // Fetch superhero powers from superhero_powers.json
-//   superhero.powers = powersData[superhero.name];
+  // Remove lists with the specified nickname
+  const filteredLists = publicLists.filter((list) => list.nickname !== nickname);
 
-//   res.json(superhero);
-// });
+  res.json(filteredLists);
+});
 
-// // Endpoint to get detailed information for a superhero by ID
-// app.get('/api/superhero/:id', (req, res) => {
-//   const { id } = req.params;
 
-//   // Fetch superhero information from superhero_info.json
-//   const superhero = infoData.find((hero) => hero.id === parseInt(id));
 
-//   // Fetch superhero powers from superhero_powers.json
-//   superhero.powers = powersData[superhero.name];
 
-//   res.json(superhero);
-// });
+
 
 // Endpoint to get detailed information for a superhero by ID
 app.get('/api/superhero/:id', (req, res) => {
@@ -234,6 +217,113 @@ app.get('/api/superhero/:id', (req, res) => {
   };
 
   res.json(superheroInfo);
+});
+
+
+
+// Endpoint to create a new superhero list
+app.post('/api/secure/createlist', (req, res) => {
+  const { listName, description, heroIds, isPublic, nickname } = req.body;
+
+  // Get the current date in the format: year-month-date
+  const currentDate = new Date().toISOString().split('T')[0];
+
+  // Read the existing data from db.json
+  const data = JSON.parse(fs.readFileSync('db.json', 'utf-8'));
+
+  // Check if the user already has 20 lists
+  const userLists = data.filter((list) => list.nickname === nickname);
+  if (userLists.length >= 20) {
+    return res.status(400).json({ error: 'User can only have up to 20 lists.' });
+  }
+
+  // Check if the list name is unique for the user
+  const isListNameUnique = userLists.every((list) => list.listName !== listName);
+  if (!isListNameUnique) {
+    return res.status(400).json({ error: 'List name must be unique for the user.' });
+  }
+
+  // Create a new superhero list object
+  const newList = {
+    listName,
+    lastModified: currentDate,
+    nickname,  // Use the provided nickname
+    ids: heroIds,
+    averageRating: null, // Set the default value to null
+    isPublic,
+    description,
+  };
+
+  // Add the new list to the existing data
+  data.push(newList);
+
+  // Write the updated data back to db.json
+  fs.writeFileSync('db.json', JSON.stringify(data, null, 2), 'utf-8');
+
+  res.json(newList);
+});
+
+
+// Endpoint to get the nickname of a user by email
+app.get('/api/nickname/:email', (req, res) => {
+  const { email } = req.params;
+
+  console.log('Requested email:', email); // Log the requested email
+
+  // Read the users data from users.json
+  const usersData = JSON.parse(fs.readFileSync('users.json', 'utf-8'));
+
+  // Find the user with the specified email
+  const user = usersData.users.find((user) => user.email === email);
+
+  if (user) {
+    console.log('User found. Nickname:', user.nickname); // Log the found user's nickname
+    res.json({ nickname: user.nickname });
+  } else {
+    console.log('User not found for email:', email); // Log that user was not found
+    res.status(404).json({ error: 'User not found' });
+  }
+});
+
+
+// Endpoint to delete a superhero list
+app.delete('/api/secure/deletelist', (req, res) => {
+  const { listName, nickname } = req.body;
+
+  // Read the existing data from db.json
+  let data = JSON.parse(fs.readFileSync('db.json', 'utf-8'));
+
+  // Check if the entry with the given list name and nickname exists
+  const indexToDelete = data.findIndex(
+    (list) => list.listName === listName && list.nickname === nickname
+  );
+
+  if (indexToDelete !== -1) {
+    // Entry found, delete it
+    data.splice(indexToDelete, 1);
+
+    // Write the updated data back to db.json
+    fs.writeFileSync('db.json', JSON.stringify(data, null, 2), 'utf-8');
+
+    res.json({ success: true, message: 'List deleted successfully.' });
+  } else {
+    // Entry not found, send an error response
+    res.status(404).json({ error: 'List not found for the given nickname and list name.' });
+  }
+});
+
+
+// Endpoint to get superhero lists by nickname
+app.get('/api/secure/yourlists', (req, res) => {
+  const { nickname } = req.query;
+
+  // Read the superhero lists data from db.json
+  const superheroLists = JSON.parse(fs.readFileSync('db.json', 'utf-8'));
+
+  // Filter lists by nickname
+  const userLists = superheroLists.filter((list) => list.nickname === nickname);
+
+  res.json(userLists);
 });
 
 
