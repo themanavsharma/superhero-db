@@ -1,0 +1,34 @@
+{
+  "users": [
+    {
+      "email": "nafuhato@tutuapp.bid",
+      "password": "abc123",
+      "nickname": "HelloHello"
+    },
+    {
+      "email": "livaho@tutuapp.bid",
+      "password": "abc123456",
+      "nickname": "Thisisatest"
+    },
+    {
+      "email": "bofolawu@socam.me",
+      "password": "thisisapassword",
+      "nickname": "Hellooooo"
+    },
+    {
+      "email": "qoxuly@tutuapp.bid",
+      "password": "hellohello",
+      "nickname": "Thisisanotherone"
+    },
+    {
+      "email": "abiakos003@gmail.com",
+      "password": "abc1234",
+      "nickname": "Abby"
+    },
+    {
+      "email": "sharmamanavv@gmail.com",
+      "password": "abcd1234",
+      "nickname": "Manav S"
+    }
+  ]
+}
