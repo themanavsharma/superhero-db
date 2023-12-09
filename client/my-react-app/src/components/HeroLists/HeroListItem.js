@@ -59,45 +59,11 @@ const HeroListItem = ({ list }) => {
     setComment('');
   };
 
-//   const handleSubmitReview = () => {
-//     // TODO: Handle submitting review logic
-//     // For now, just log the rating and comment
-//     console.log('Rating:', rating);
-//     console.log('Comment:', comment);
 
-//     // Reset review form fields
-//     setRating(0);
-//     setComment('');
-
-//     // Hide the review form
-//     setIsLeavingReview(false);
-//   };
 
   const handleSubmitReview = async () => {
     try {
-    //   // Get the email of the logged-in user from Firebase
-    //   const user = auth.currentUser;
 
-    //   if (!user) {
-    //     console.error('User not logged in');
-    //     return;
-    //   }
-
-    //   const email = user.email;
-
-    //   // Get the user's nickname from the backend
-    //   const nicknameResponse = await fetch(`http://localhost:8080/api/nickname/${email}`);
-
-    //   if (!nicknameResponse.ok) {
-    //     console.error('Error fetching nickname:', nicknameResponse.statusText);
-    //     return;
-    //   }
-
-    //   const nicknameData = await nicknameResponse.json();
-    //   const listCreatorNickname = nicknameData.nickname;
-
-      // Get the updated information from the editedList state
-    //   const { listName, rating, comment } = editedList;
 
       // Call the backend to add the review
       const addReviewResponse = await fetch('http://localhost:8080/api/secure/addreview', {
