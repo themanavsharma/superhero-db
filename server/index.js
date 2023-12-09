@@ -368,6 +368,35 @@ app.put('/api/secure/updatelist/:listName', (req, res) => {
 });
 
 
+const reviewsAdapter = new FileSync('reviews.json');
+const reviewsDB = low(reviewsAdapter);
+
+// Endpoint to add a review
+app.post('/api/secure/addreview', (req, res) => {
+  const { listName, listCreatorNickname, rating, comment } = req.body;
+
+  // Log the initial state of the database
+  console.log('Initial state:', reviewsDB.getState());
+
+  // Initialize or get the reviews data from the database
+  const reviews = reviewsDB.get('reviews', []);
+
+  // Add the new review to the data
+  const newReview = {
+    listName,
+    listCreatorNickname,
+    rating,
+    comment,
+    hidden: false,
+  };
+
+  reviews.push(newReview).write();
+
+  // Log the updated state of the database
+  console.log('Updated state:', reviewsDB.getState());
+
+  res.json(newReview); // Return the added review
+});
 
 
 
