@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
+import { auth } from '../../config/firebase.config';
+
 
 const YourListItem = ({ list }) => {
   const { listName, lastModified, nickname, ids, averageRating, description } = list;
   const [detailedInfo, setDetailedInfo] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editedList, setEditedList] = useState({});
+  const [currentListName, setCurrentListName] = useState(listName); // New variable to store the original list name
+
 
   const handleViewMoreInfo = async () => {
     try {
@@ -55,14 +59,75 @@ const YourListItem = ({ list }) => {
     setIsEditing(false);
   };
 
-  const handleMakeChanges = () => {
-    // Handle the logic for making changes to the list
-    // You can send a request to the backend to update the list with the editedList values
-    console.log('Making changes:', editedList);
+  // const handleMakeChanges = () => {
+  //   // Handle the logic for making changes to the list
+  //   // You can send a request to the backend to update the list with the editedList values
+  //   console.log('Making changes:', editedList);
 
-    // After making changes, revert to the original view
-    setIsEditing(false);
+  //   // After making changes, revert to the original view
+  //   setIsEditing(false);
+  // };
+
+  const handleMakeChanges = async () => {
+    try {
+      // Get the current user from Firebase
+      const user = auth.currentUser;
+  
+      if (!user) {
+        console.error('User not logged in');
+        return;
+      }
+  
+      // Get the email of the logged-in user
+      const email = user.email;
+  
+      // Fetch the nickname of the user
+      const nicknameResponse = await fetch(`http://localhost:8080/api/nickname/${email}`);
+  
+      if (!nicknameResponse.ok) {
+        console.error('Error fetching nickname:', nicknameResponse.statusText);
+        return;
+      }
+  
+      const nicknameData = await nicknameResponse.json();
+      const nickname = nicknameData.nickname;
+  
+      // Get the updated information from the editedList state
+      const { listName, description, ids, isPublic } = editedList;
+  
+      // Determine if the list is public or private based on the radio button
+      const isPublicValue = isPublic === 'public';
+  
+      // Call the backend to update the list
+      const updateListResponse = await fetch(`http://localhost:8080/api/secure/updatelist/${currentListName}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          listName,
+          description,
+          heroIds: ids,
+          isPublic: isPublicValue,
+          nickname,
+        }),
+      });
+  
+      if (updateListResponse.ok) {
+        console.log('List updated successfully');
+        window.location.reload();
+  
+        // After making changes, revert to the original view
+        setIsEditing(false);
+      } else {
+        console.error('Error updating list:', updateListResponse.statusText);
+      }
+    } catch (error) {
+      console.error('Error making changes:', error);
+    }
   };
+  
+  
 
   return (
     <div className="list-container">

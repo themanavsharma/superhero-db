@@ -47,6 +47,7 @@ const HeroLists = () => {
         if (response.ok) {
           const data = await response.json();
           setLists(data);
+         
         } else {
           console.error('Error fetching superhero lists:', response.statusText);
         }

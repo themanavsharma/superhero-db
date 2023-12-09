@@ -326,6 +326,48 @@ app.get('/api/secure/yourlists', (req, res) => {
   res.json(userLists);
 });
 
+// Endpoint to update a superhero list
+app.put('/api/secure/updatelist/:listName', (req, res) => {
+  const listNameToUpdate = req.params.listName;
+  const { listName, description, heroIds, isPublic, nickname } = req.body;
+
+  console.log('List name received in URL:', listNameToUpdate); // Log the list name received in the URL
+  console.log('List name received in body:', listName); // Log the list name received in the body
+
+  // Read the existing data from db.json
+  const data = JSON.parse(fs.readFileSync('db.json', 'utf-8'));
+
+  // Find the index of the list to update
+  const indexToUpdate = data.findIndex((list) => list.listName === listNameToUpdate);
+
+  if (indexToUpdate !== -1) {
+    // Keep the existing averageRating value
+    const existingAverageRating = data[indexToUpdate].averageRating;
+
+    // Update the list with the new information
+    data[indexToUpdate] = {
+      listName,
+      lastModified: new Date().toISOString().split('T')[0],
+      nickname,
+      ids: heroIds,
+      averageRating: existingAverageRating,
+      isPublic,
+      description,
+    };
+
+    // Write the updated data back to db.json
+    fs.writeFileSync('db.json', JSON.stringify(data, null, 2), 'utf-8');
+
+    console.log('List updated successfully:', data[indexToUpdate]); // Log the updated list
+
+    res.json(data[indexToUpdate]);
+  } else {
+    console.error('List not found. Existing lists:', data); // Log the existing lists
+    res.status(404).json({ error: 'List not found' });
+  }
+});
+
+
 
 
 
